@@ -28,4 +28,8 @@ export class ShoppingListComponent {
       .then(ingredients => this.ingredients = ingredients)
       .catch(error => console.log(error));
   }
+
+  onEditItem(index: number) {
+    this.ingredientService.startedEditing.next(index);
+  }
 }

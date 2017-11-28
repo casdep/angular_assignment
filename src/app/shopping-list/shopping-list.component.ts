@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnChanges, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 
 import { Ingredient } from '../shared/ingredient.model';
@@ -10,7 +10,7 @@ import {ActivatedRoute, Router} from '@angular/router';
   templateUrl: './shopping-list.component.html',
   styleUrls: ['./shopping-list.component.css']
 })
-export class ShoppingListComponent {
+export class ShoppingListComponent implements OnInit, OnChanges{
 
   ingredients: Ingredient[];
 
@@ -27,6 +27,12 @@ export class ShoppingListComponent {
     this.ingredientService.getIngredients()
       .then(ingredients => this.ingredients = ingredients)
       .catch(error => console.log(error));
+  }
+
+  ngOnChanges(): void {
+    this.ngOnInit();
+    console.log('tez');
+
   }
 
   onEditItem(index: number) {

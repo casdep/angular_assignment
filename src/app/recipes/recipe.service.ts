@@ -25,6 +25,7 @@ export class RecipeService {
       .toPromise()
       .then(response => {
         console.dir(response.json());
+        this.recipes = response.json() as Recipe[];
         return response.json() as Recipe[];
       })
       .catch(error => {

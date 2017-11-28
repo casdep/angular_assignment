@@ -1,28 +1,10 @@
 
 export class Ingredient {
+  public name: string;
+  public amount: number;
 
-  private _name: string;
-  private _amount: string;
-
-  constructor(values: Object = {}) {
-    Object.assign(this, values);
+  constructor(name: string, amount: number) {
+    this.name = name;
+    this.amount = amount;
   }
-
-  get name(): string {
-    return this._name;
-  }
-
-  set name(value: string) {
-    this._name = value;
-  }
-
-  get amount(): string {
-    return this._amount;
-  }
-
-  set amount(value: string) {
-    this._amount = value;
-  }
-
-
 }

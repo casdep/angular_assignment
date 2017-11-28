@@ -12,7 +12,7 @@ export class ShoppingListService {
 
   private headers = new Headers({'Content-Type': 'application/json'});
   private serverUrl = environment.serverUrl + '/ingredients'; // URL to web api
-  private ingredients: Ingredient[] = [];
+  private ingredients: Ingredient[];
 
   ingredientsChanged = new Subject<Ingredient[]>();
   startedEditing = new Subject<number>();
@@ -25,6 +25,7 @@ export class ShoppingListService {
       .toPromise()
       .then(response => {
         console.dir(response.json());
+        this.ingredients = response.json() as Ingredient[];
         return response.json() as Ingredient[];
       })
       .catch(error => {
@@ -34,6 +35,9 @@ export class ShoppingListService {
 
 
   getIngredient(index: number) {
+    console.log(index);
+    console.log(this.ingredients.length);
+    console.log(this.ingredients[index]);
     return this.ingredients[index];
   }
 

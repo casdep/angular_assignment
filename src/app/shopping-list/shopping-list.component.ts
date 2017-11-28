@@ -10,7 +10,7 @@ import {ActivatedRoute, Router} from '@angular/router';
   templateUrl: './shopping-list.component.html',
   styleUrls: ['./shopping-list.component.css']
 })
-export class ShoppingListComponent implements OnInit, OnChanges{
+export class ShoppingListComponent implements OnInit, OnChanges {
 
   ingredients: Ingredient[];
 
@@ -19,7 +19,6 @@ export class ShoppingListComponent implements OnInit, OnChanges{
     private route: ActivatedRoute,
     private ingredientService: ShoppingListService
   ) { }
-
 
   // constructor(private slService: ShoppingListService) { }
 

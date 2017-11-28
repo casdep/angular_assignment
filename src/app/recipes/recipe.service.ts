@@ -85,9 +85,21 @@ export class RecipeService {
       });
   }
 
-  deleteRecipe(index: number) {
+  deleteRecipe(index: number) : Promise<Recipe> {
+    const recipeToDelete = this.recipes[index];
+
     this.recipes.splice(index, 1);
     this.recipesChanged.next(this.recipes.slice());
+
+    console.log('Recipe verwijderen: ' + recipeToDelete.name);
+    return this.http.delete(this.serverUrl + '/' + recipeToDelete._id)
+      .toPromise()
+      .then(response => {
+        return response.json() as Recipe;
+      })
+      .catch(error => {
+        return this.handleError(error);
+      });
   }
 
   private handleError(error: any): Promise<any> {

@@ -2,9 +2,7 @@ import { Ingredient } from '../shared/ingredient.model';
 import { Injectable } from '@angular/core';
 import { Http, Headers, URLSearchParams } from '@angular/http';
 import { environment } from '../../environments/environment';
-import { Router, ActivatedRoute } from '@angular/router';
 import 'rxjs/add/operator/toPromise';
-import { Observable } from 'rxjs/Observable';
 import {Subject} from 'rxjs/Subject';
 
 @Injectable()
@@ -41,27 +39,67 @@ export class ShoppingListService {
     return this.ingredients[index];
   }
 
-  addIngredient(ingredient: Ingredient) {
+  addIngredient(ingredient: Ingredient) : Promise<Ingredient> {
     this.ingredients.push(ingredient);
     this.ingredientsChanged.next(this.ingredients.slice());
+
+    console.log('Ingredient toevoegen: ' + ingredient.name);
+    return this.http.post(this.serverUrl,
+      {
+        name: ingredient.name,
+        amount: ingredient.amount,
+        headers: this.headers
+      })
+      .toPromise()
+      .then(response => {
+        return response.json() as Ingredient;
+      })
+      .catch(error => {
+        return this.handleError(error);
+      });
   }
 
   addIngredients(ingredients: Ingredient[]) {
-    // for (let ingredient of ingredients) {
-    //   this.addIngredient(ingredient);
-    // }
-    this.ingredients.push(...ingredients);
-    this.ingredientsChanged.next(this.ingredients.slice());
+    for (let ingredient of ingredients) {
+      this.addIngredient(ingredient);
+    }
   }
 
   updateIngredient(index: number, newIngredient: Ingredient) {
+    newIngredient._id = this.ingredients[index]._id;
+
     this.ingredients[index] = newIngredient;
     this.ingredientsChanged.next(this.ingredients.slice());
+
+    console.log('Ingredient updaten: ' + newIngredient.name);
+    return this.http.put(this.serverUrl + '/' + newIngredient._id, {
+      name: newIngredient.name,
+      amount: newIngredient.amount,
+      headers: this.headers})
+      .toPromise()
+      .then(response => {
+        return response.json() as Ingredient;
+      })
+      .catch(error => {
+        return this.handleError(error);
+      });
   }
 
   deleteIngredient(index: number) {
+    const ingredientToDelete = this.ingredients[index];
+
     this.ingredients.splice(1);
     this.ingredientsChanged.next(this.ingredients.slice());
+
+    console.log('Ingredient verwijderen: ' + ingredientToDelete.name);
+    return this.http.delete(this.serverUrl + '/' + ingredientToDelete._id)
+      .toPromise()
+      .then(response => {
+        return response.json() as Ingredient;
+      })
+      .catch(error => {
+        return this.handleError(error);
+      });
   }
 
   private handleError(error: any): Promise<any> {

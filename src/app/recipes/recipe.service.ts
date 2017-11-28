@@ -41,14 +41,48 @@ export class RecipeService {
     this.slService.addIngredients(ingredients);
   }
 
-  addRecipe(recipe: Recipe) {
+  addRecipe(recipe: Recipe) : Promise<Recipe> {
     this.recipes.push(recipe);
     this.recipesChanged.next(this.recipes.slice());
+
+    console.log('Recipe toevoegen: ' + recipe.name);
+    return this.http.post(this.serverUrl,
+      {
+        name: recipe.name,
+        imageURL: recipe.imageURL,
+        ingredients: recipe.ingredients,
+        description: recipe.description,
+        headers: this.headers
+      })
+      .toPromise()
+      .then(response => {
+        console.log(response.json() as Recipe);
+        return response.json() as Recipe;
+      })
+      .catch(error => {
+        return this.handleError(error);
+      });
   }
 
-  updateRecipe(index: number, newRecipe: Recipe) {
+  updateRecipe(index: number, newRecipe: Recipe) : Promise<Recipe> {
+    newRecipe._id = this.recipes[index]._id;
+
     this.recipes[index] = newRecipe;
     this.recipesChanged.next(this.recipes.slice());
+
+    console.log('Recipe updaten: ' + newRecipe.name);
+    return this.http.put(this.serverUrl + '/' + newRecipe._id, {
+      name: newRecipe.name,
+      imageURL: newRecipe.imageURL,
+      ingredients: newRecipe.ingredients,
+      headers: this.headers})
+      .toPromise()
+      .then(response => {
+        return response.json() as Recipe;
+      })
+      .catch(error => {
+        return this.handleError(error);
+      });
   }
 
   deleteRecipe(index: number) {

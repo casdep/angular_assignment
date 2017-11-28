@@ -11,6 +11,8 @@ import { RecipeService } from '../recipe.service';
   styleUrls: ['./recipe-list.component.css']
 })
 export class RecipeListComponent implements OnInit, OnDestroy {
+
+  private subscription: Subscription;
   recipes: Recipe[];
 
   constructor(
@@ -19,10 +21,22 @@ export class RecipeListComponent implements OnInit, OnDestroy {
     private recipeService: RecipeService
   ) { }
 
-  ngOnInit(): void {
+  // ngOnInit(): void {
+  //   this.recipeService.getRecipes()
+  //     .then(recipes => this.recipes = recipes)
+  //     .catch(error => console.log(error));
+  // }
+
+  ngOnInit() {
     this.recipeService.getRecipes()
       .then(recipes => this.recipes = recipes)
       .catch(error => console.log(error));
+    this.subscription = this.recipeService.recipesChanged
+      .subscribe(
+        (recipes: Recipe[]) => {
+          this.recipes = recipes;
+        }
+      );
   }
 
   onNewRecipe() {

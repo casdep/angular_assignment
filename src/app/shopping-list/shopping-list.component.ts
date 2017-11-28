@@ -12,6 +12,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 })
 export class ShoppingListComponent implements OnInit, OnChanges {
 
+  private subscription: Subscription;
   ingredients: Ingredient[];
 
   constructor(
@@ -22,10 +23,22 @@ export class ShoppingListComponent implements OnInit, OnChanges {
 
   // constructor(private slService: ShoppingListService) { }
 
-  ngOnInit(): void {
+  // ngOnInit(): void {
+  //   this.ingredientService.getIngredients()
+  //     .then(ingredients => this.ingredients = ingredients)
+  //     .catch(error => console.log(error));
+  // }
+
+  ngOnInit() {
     this.ingredientService.getIngredients()
-      .then(ingredients => this.ingredients = ingredients)
-      .catch(error => console.log(error));
+         .then(ingredients => this.ingredients = ingredients)
+         .catch(error => console.log(error));
+    this.subscription = this.ingredientService.ingredientsChanged
+      .subscribe(
+        (ingredients: Ingredient[]) => {
+          this.ingredients = ingredients;
+        }
+      );
   }
 
   ngOnChanges(): void {

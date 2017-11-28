@@ -15,14 +15,15 @@ export class ShoppingListService {
   ingredientsChanged = new Subject<Ingredient[]>();
   startedEditing = new Subject<number>();
 
-  constructor(private http: Http) { }
+  constructor(private http: Http) {
+    this.getIngredients();
+  }
 
   public getIngredients(): Promise<Ingredient[]> {
     console.log('ingredients ophalen van server');
     return this.http.get(this.serverUrl, {headers: this.headers})
       .toPromise()
       .then(response => {
-        console.dir(response.json());
         this.ingredients = response.json() as Ingredient[];
         return response.json() as Ingredient[];
       })
@@ -33,9 +34,6 @@ export class ShoppingListService {
 
 
   getIngredient(index: number) {
-    console.log(index);
-    console.log(this.ingredients.length);
-    console.log(this.ingredients[index]);
     return this.ingredients[index];
   }
 
@@ -60,7 +58,7 @@ export class ShoppingListService {
   }
 
   addIngredients(ingredients: Ingredient[]) {
-    for (let ingredient of ingredients) {
+    for (const ingredient of ingredients) {
       this.addIngredient(ingredient);
     }
   }
@@ -88,7 +86,7 @@ export class ShoppingListService {
   deleteIngredient(index: number) {
     const ingredientToDelete = this.ingredients[index];
 
-    this.ingredients.splice(1);
+    this.ingredients.splice(index, 1);
     this.ingredientsChanged.next(this.ingredients.slice());
 
     console.log('Ingredient verwijderen: ' + ingredientToDelete.name);
